@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Personality
 {
     Image image;
-    public Attribute[] attributes = new Attribute[3];
+    public Attribute[] attributes = new Attribute[] {(Attribute)6, (Attribute)6, (Attribute)6, (Attribute)6};
 
     // WARNING MAKE SURE
     // Targets for different attributes (love/hate)
