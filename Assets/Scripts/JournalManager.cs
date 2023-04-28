@@ -25,13 +25,13 @@ public class JournalManager : MonoBehaviour
     public Army army;
     string[] characterNames = new string[]
     {
-        "Adelig 1",
-        "Adelig 2",
-        "Adelig 3",
-        "Strong 1",
-        "Strong 2",
-        "Strong 3",
-        "Strong 4"
+        "Robber",
+        "Noble 1",
+        "Hero",
+        "Commander",
+        "Noble 2",
+        "Noble 3",
+        "Bandit"
     };
 
     void Start()
@@ -39,7 +39,6 @@ public class JournalManager : MonoBehaviour
         characters = new Personality[characterSprites.Length];
         for (int i = 0; i < 7; i++) characters[i] = new Personality(characterSprites[i], characterNames[i], i, 10);
         pageCount = Mathf.FloorToInt(characterSprites.Length / 2) + 1;
-        army = new Army(characters, dialogueManager);
         
         // Making sure two people aren't loyal to each other
         for (int i = 0; i < 7; i++) 
@@ -53,6 +52,8 @@ public class JournalManager : MonoBehaviour
                 }
             }
         }
+
+        army = new Army(characters, dialogueManager);
     }
 
     void Update()
@@ -60,7 +61,7 @@ public class JournalManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.J)) journal.gameObject.SetActive(!journal.gameObject.activeSelf);
         
         // Page turning
-        if (Input.GetKeyDown(KeyCode.RightArrow) && journal.gameObject.activeSelf && currentPage < pageCount) currentPage++;
+        if (Input.GetKeyDown(KeyCode.RightArrow) && journal.gameObject.activeSelf && currentPage < pageCount - 1) currentPage++;
         if (Input.GetKeyDown(KeyCode.LeftArrow) && journal.gameObject.activeSelf && currentPage > 0) currentPage--;
 
 

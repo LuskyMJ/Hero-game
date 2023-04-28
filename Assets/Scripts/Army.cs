@@ -64,8 +64,17 @@ public class Army
         if (player.IndexOf(person) != -1) player.RemoveAt(player.IndexOf(person));
         
         List<Personality> peopleToAdd = new List<Personality>();
-        for (int i = 0; i < loyalty.Count; i++) if (loyalty[i].hasAttribute(Personality.Attribute.StrongLike) && people[loyalty[i].strongLikeIndex] == person) peopleToAdd.Add(loyalty[i]);
-        for (int i = 0; i < unassigned.Count; i++) if (unassigned[i].hasAttribute(Personality.Attribute.StrongLike) && people[unassigned[i].strongLikeIndex] == person) peopleToAdd.Add(unassigned[i]);
+        for (int i = 0; i < loyalty.Count; i++) if (loyalty[i].hasAttribute(Personality.Attribute.StrongLike) && people[loyalty[i].strongLikeIndex] == person) 
+        {
+            Debug.Log(loyalty[i].name + " likes " + person.name);
+            peopleToAdd.Add(loyalty[i]);
+        }
+        for (int i = 0; i < unassigned.Count; i++) if (unassigned[i].hasAttribute(Personality.Attribute.StrongLike) && people[unassigned[i].strongLikeIndex] == person)
+        {
+            Debug.Log(unassigned[i].name + " likes " + person.name);
+            peopleToAdd.Add(unassigned[i]);
+        }
+        
         foreach (Personality personality in peopleToAdd) addToEmperor(personality);
     }
 

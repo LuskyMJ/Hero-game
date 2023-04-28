@@ -23,27 +23,22 @@ public class DialogueManager : MonoBehaviour
     bool isIntermission = true;
     int currentScene = 0;
     bool interMissionDone = false;
+    bool gameDone;
     
     string[] intermissionText = new string[]
     {
-        "Start of the game",
-        "Intermission 2",
-        "Intermission 3",
-        "Intermission 4",
-        "Intermission 5",
-        "Intermission 6",
-        "Intermission 7",
+        "Your name is Zuma Cuahutenco. You're a middle aged man living in the aztec kingdom with a single daughter and the wealth you've built up throughout your life. \n\n On a completely normal day. Your daughter gets chosen by the unpopular emperor to get sacrificed in a ritual in order to prevent a comming drought. \n\n In a fit of rage you start to use your wealth to collect powerful people in order to overthrow the emperor and save your daughter from his brutality. \n\n You go to visit a noble person but accidentally meet a robber on your way.",
+        "You keep going until you reach the nobles castle.",
+        "You continue your journey towards the noble but get lost in the woods. You meet a hero in the forest.",
+        "You continue all the way to the nobles castle but is stopped outside by his commander.",
+        "You walk into the nobles castle and into the throne room where the noble sits.",
+        "Your journey continues towards a nobles castle.",
+        "You hear from someone local that there's a powerful bandit hiding with his gang inside the forest.",
+        "With your army gathered you meet the emperor in a final battle for the throne..."
     };
     
-    public bool[] skipScenes = new bool[]
-    {
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-    };
+    [HideInInspector]
+    public bool[] skipScenes;
 
     // For writing animation
     bool textWriting = false;
@@ -66,12 +61,27 @@ public class DialogueManager : MonoBehaviour
         people = journalManager.characters;
         changeText(intermissionText[0], 3);
         changeBackground(intermission);
+        skipScenes = new bool[]
+        {
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+        };
     }
 
     void Update()
     {
-        Personality person = people[currentScene];
-        if (currentScene >= 0 && currentScene <= people.Length - 1) character.sprite = people[currentScene].sprite;
+        Personality person = people[0];
+        if (currentScene >= 0 && currentScene <= people.Length - 1) 
+        {
+            character.sprite = people[currentScene].sprite;
+            person = people[currentScene];
+        }
         
         if (textWriting)
         {
@@ -79,6 +89,11 @@ public class DialogueManager : MonoBehaviour
             {
                 if (isIntermission)
                 {
+                    if (currentScene == intermissionText.Length - 1)
+                    {
+                        gameDone = true;
+                    }
+
                     mainText.text = writeText;
                     interMissionDone = true;
                 }
@@ -99,18 +114,25 @@ public class DialogueManager : MonoBehaviour
         }
 
         // Only allow the player to click if there's more text to be shown or ready to switch scene
-        else if (awaitingClick && (nextText != "" || writeText == "I would love to fight by your side." || writeText == "I will do everything I can to make sure you don't succeed then!" || writeText.Contains("whether it's") || interMissionDone))
+        else if (awaitingClick && (nextText != "" || writeText == "I would love to fight by your side." || writeText == "I will do everything I can to make sure you don't succeed then!" || writeText.Contains("whether it's") || interMissionDone || gameDone))
         {
             if (Input.GetMouseButtonDown(0))
             {
                 if (isIntermission)
                 {
+                    if (gameDone) 
+                    {
+                        Debug.Log("Game done");
+                        if (journalManager.army.calculateEmperorPower() > journalManager.army.calculatePlayerPower()) SceneManager.LoadScene("LoseScreen");
+                        else SceneManager.LoadScene("WinScreen");
+                    }
+
                     for (int i = 0; i < options.Length; i++) options[i].text = "";
                     mainText.text = "";
                     isIntermission = false;
                     changeBackground(backgrounds[currentScene]);
-                    character.sprite = person.sprite;
                     chatbox.gameObject.SetActive(true);
+                    character.sprite = person.sprite;
                     changeText(introductionTexts[0], 2);
                     nextText = introductionTexts[1];
                     interMissionDone = false;
@@ -127,7 +149,17 @@ public class DialogueManager : MonoBehaviour
                         isIntermission = true;
                         awaitingClick = false;
                         currentScene++;
-                        while (skipScenes[currentScene]) currentScene++;
+
+                        Debug.Log("Scene amount: " + skipScenes.Length);
+                        Debug.Log("All scenes");
+                        foreach(bool thing in skipScenes) Debug.Log(thing);
+
+                        Debug.Log("Current Scene " + currentScene);
+                        while (skipScenes[currentScene]) 
+                        {
+                            currentScene++;
+                            Debug.Log("Current Scene " + currentScene);
+                        }
 
                         // Game is finished
                         if (currentScene >= intermissionText.Length)
@@ -189,7 +221,6 @@ public class DialogueManager : MonoBehaviour
                     Personality[] peopleToKillList = peopleToKill(keys[action]);
                     string sentence = generateSentence(peopleToKillList, values[action], keys[action].Contains("Refuse"));
                     foreach (Personality personality in peopleToKillList) journalManager.army.addToEmperor(personality);
-                    foreach (Personality personality1 in peopleToKillList) Debug.Log(personality1.name);
                     changeText(sentence, 2);
                     if (sentence.Contains("refuse"))
                     {
