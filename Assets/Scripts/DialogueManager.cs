@@ -13,9 +13,12 @@ public class DialogueManager : MonoBehaviour
     public JournalManager journalManager;
     public TextMeshProUGUI[] options;
     public TextMeshProUGUI mainText;
+    public TextMeshProUGUI goldText;
     public Image background;
     public GameObject chatbox;
     Personality[] people;
+    public int gold;
+    public AudioSource audioSource;
 
     [Header("Background")]
     public Sprite[] backgrounds;
@@ -72,6 +75,7 @@ public class DialogueManager : MonoBehaviour
             false,
             false,
         };
+        goldText.text = "Gold: " + gold.ToString();
     }
 
     void Update()
@@ -85,8 +89,16 @@ public class DialogueManager : MonoBehaviour
         
         if (textWriting)
         {
+            if (!audioSource.isPlaying) 
+            {
+                audioSource.Play();
+                audioSource.loop = true;
+            }
+
             if (timePassed >= animationTime)
             {
+                audioSource.Stop();
+
                 if (isIntermission)
                 {
                     if (currentScene == intermissionText.Length - 1)
@@ -122,7 +134,6 @@ public class DialogueManager : MonoBehaviour
                 {
                     if (gameDone) 
                     {
-                        Debug.Log("Game done");
                         if (journalManager.army.calculateEmperorPower() > journalManager.army.calculatePlayerPower()) SceneManager.LoadScene("LoseScreen");
                         else SceneManager.LoadScene("WinScreen");
                     }
@@ -139,7 +150,7 @@ public class DialogueManager : MonoBehaviour
                     introduction = true;
                 }
 
-                else
+                else    
                 {
                     if (writeText == "I would love to fight by your side." || writeText == "I will do everything I can to make sure you don't succeed then!" || writeText.Contains("whether it's"))
                     {
@@ -150,23 +161,7 @@ public class DialogueManager : MonoBehaviour
                         awaitingClick = false;
                         currentScene++;
 
-                        Debug.Log("Scene amount: " + skipScenes.Length);
-                        Debug.Log("All scenes");
-                        foreach(bool thing in skipScenes) Debug.Log(thing);
-
-                        Debug.Log("Current Scene " + currentScene);
-                        while (skipScenes[currentScene]) 
-                        {
-                            currentScene++;
-                            Debug.Log("Current Scene " + currentScene);
-                        }
-
-                        // Game is finished
-                        if (currentScene >= intermissionText.Length)
-                        {
-                            if (journalManager.army.calculateEmperorPower() > journalManager.army.calculatePlayerPower()) Debug.Log("YOU LOST");
-                            else Debug.Log("YOU WON");
-                        }
+                        while (skipScenes[currentScene]) currentScene++;
 
                         changeBackground(intermission);
                         changeText(intermissionText[currentScene], 3);
@@ -218,22 +213,28 @@ public class DialogueManager : MonoBehaviour
 
                 if (action != -1 || writeText.Contains("whether it's"))
                 {
-                    Personality[] peopleToKillList = peopleToKill(keys[action]);
-                    string sentence = generateSentence(peopleToKillList, values[action], keys[action].Contains("Refuse"));
-                    foreach (Personality personality in peopleToKillList) journalManager.army.addToEmperor(personality);
-                    changeText(sentence, 2);
-                    if (sentence.Contains("refuse"))
+                    // Can you afford that action
+                    if (values[action] <= gold)
                     {
-                        journalManager.army.addToEmperor(person);
-                        nextText = "I will do everything I can to make sure you don't succeed then!";
-                    }
+                        Personality[] peopleToKillList = peopleToKill(keys[action]);
+                        string sentence = generateSentence(peopleToKillList, values[action], keys[action].Contains("Refuse"));
+                        foreach (Personality personality in peopleToKillList) journalManager.army.addToEmperor(personality);
+                        changeText(sentence, 2);
+                        if (sentence.Contains("refuse"))
+                        {
+                            journalManager.army.addToEmperor(person);
+                            nextText = "I will do everything I can to make sure you don't succeed then!";
+                        }
 
-                    else 
-                    {
-                        journalManager.army.addToPlayer(person);
-                        nextText = "I would love to fight by your side.";
-                    }
+                        else 
+                        {
+                            journalManager.army.addToPlayer(person);
+                            nextText = "I would love to fight by your side.";
+                        }
 
+                        gold -= values[action];
+                        goldText.text = "Gold: " + gold.ToString();
+                    }
                 }
             }
         }

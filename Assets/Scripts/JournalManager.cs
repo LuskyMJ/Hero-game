@@ -132,22 +132,22 @@ public class JournalManager : MonoBehaviour
             int baseprice = 1000;
             if (person.hasAttribute(Personality.Attribute.Like))
             {
-                if (army.emperorHas(characters[person.likeIndex])) {
-                    options.Add("I'm tempted to join the emperors side because I like " + characterNames[person.likeIndex] + ", but I will join you for a high enough price.", 0);
-                    baseprice += 250;
-                }
-                else if (army.playerHas(characters[person.likeIndex])) {
-                    options.Add("I'm tempted to join your side because I like " + characterNames[person.likeIndex] + ", but I wont do it for free.", 0);
-                    baseprice -= 250;
-                }
+                if (person.hasAttribute(Personality.Attribute.Like))
+                {
+                    if (army.emperorHas(characters[person.likeIndex])) {
+                        options.Add("I'm tempted to join the emperors side because I like " + characterNames[person.likeIndex] + ", but I will join you for a high enough price.", 0);
+                        baseprice += 250;
+                    }
+                    else if (army.playerHas(characters[person.likeIndex])) {
+                        options.Add("I'm tempted to join your side because I like " + characterNames[person.likeIndex] + ", but I wont do it for free.", 0);
+                        baseprice -= 250;
+                    }
 
-                else options.Add("I don't care who I fight for as long as I get paid for it.", 0);
+                    else options.Add("I don't care who I fight for as long as I get paid for it.", 0);
+                }
             }
 
             else options.Add("I don't care who I fight for as long as I get paid for it.", 0);
-            
-            // WARNING add logic for greed
-
     
             bool hatePlayer = person.hasAttribute(Personality.Attribute.Hate) && army.playerHas(characters[person.hateIndex]);
             bool strongHatePlayer = person.hasAttribute(Personality.Attribute.StrongHate) && army.playerHas(characters[person.strongHateIndex]);
@@ -158,18 +158,17 @@ public class JournalManager : MonoBehaviour
 
             options.Add("Pay the price.", baseprice);
 
-
             // The tempPrice variable is used to negate the increase in base price that happens when a character hates a person on your team.
             // Example: If the person strongly hates someone on your team the base price will incrase by 500. If you promise that persons head
             // the price should both decrease by 500 for promising the head and 500 again for not having to work with the person on your team.
             if (person.hasAttribute(Personality.Attribute.Hate) && person.hasAttribute(Personality.Attribute.StrongHate))
             {
                 int tempPrice = 0;
-                if (hatePlayer) tempPrice = 250;
+                if (hatePlayer) tempPrice += 250;
                 options.Add("Head of " + characterNames[person.hateIndex] + ".", baseprice - 250 - tempPrice);
 
                 tempPrice = 0;
-                if (strongHatePlayer) tempPrice = 500;
+                if (strongHatePlayer) tempPrice += 500;
                 options.Add("Head of " + characterNames[person.strongHateIndex] + ".", baseprice - 500 - tempPrice);
 
                 tempPrice = 0;

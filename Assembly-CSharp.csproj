@@ -36,12 +36,12 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\InfoManager.cs" />
      <Compile Include="Assets\Scripts\JournalManager.cs" />
      <Compile Include="Assets\Scripts\Personality.cs" />
      <Compile Include="Assets\Scripts\ArmyManager.cs" />
      <Compile Include="Assets\Scripts\DialogueManager.cs" />
      <Compile Include="Assets\Scripts\Army.cs" />
-     <Compile Include="Assets\Scripts\InfoManager.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
