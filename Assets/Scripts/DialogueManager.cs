@@ -10,7 +10,7 @@ public class DialogueManager : MonoBehaviour
     [Header("Objects")]
     public TextMeshProUGUI text;
     public Image character;
-    public Image mc;
+    public Image[] removeDuringIntermission;
     public JournalManager journalManager;
     public TextMeshProUGUI[] options;
     public TextMeshProUGUI mainText;
@@ -144,7 +144,7 @@ public class DialogueManager : MonoBehaviour
                     isIntermission = false;
                     changeBackground(backgrounds[currentScene]);
                     chatbox.gameObject.SetActive(true);
-                    mc.gameObject.SetActive(true);
+                    foreach (Image image in removeDuringIntermission) image.gameObject.SetActive(true);
                     character.gameObject.SetActive(true);
                     character.sprite = person.sprite;
                     changeText(introductionTexts[0], 2);
@@ -160,7 +160,7 @@ public class DialogueManager : MonoBehaviour
                         if (writeText.Contains("whether it's")) journalManager.army.addToLoyal(person);
 
                         chatbox.gameObject.SetActive(false);
-                                            mc.gameObject.SetActive(false);
+                        foreach (Image image in removeDuringIntermission) image.gameObject.SetActive(false);
                     character.gameObject.SetActive(false);
                         isIntermission = true;
                         awaitingClick = false;
