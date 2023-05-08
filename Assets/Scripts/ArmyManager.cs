@@ -18,13 +18,22 @@ public class ArmyManager : MonoBehaviour
     public TextMeshProUGUI[] unassignedPowerLevels;
     public TextMeshProUGUI[] playerPowerLevels;
     public TextMeshProUGUI[] emperorPowerLevels;
+    public Image journalScreen, infoScreen;
 
     [Header("Scripts")]
     public JournalManager journalManager; // For access to the army
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A)) army.gameObject.SetActive(!army.gameObject.activeSelf);
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            if (!army.gameObject.activeSelf)
+            {
+                journalScreen.gameObject.SetActive(false);
+                infoScreen.gameObject.SetActive(false);
+            }
+            army.gameObject.SetActive(!army.gameObject.activeSelf);
+        }
 
         if (army.gameObject.activeSelf)
         {

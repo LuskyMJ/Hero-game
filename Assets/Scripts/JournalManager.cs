@@ -13,6 +13,9 @@ public class JournalManager : MonoBehaviour
     public TextMeshProUGUI firstName, secondName;
     public TextMeshProUGUI[] firstPageAttributes, secondPageAttributes;
 
+    [Header("Other objects")]
+    public Image armyScreen, infoScreen;
+
     [Header("Images")]
     [SerializeField]
     Sprite[] characterSprites;
@@ -58,7 +61,15 @@ public class JournalManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.J)) journal.gameObject.SetActive(!journal.gameObject.activeSelf);
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            if (!journal.gameObject.activeSelf)
+            {
+                armyScreen.gameObject.SetActive(false);
+                infoScreen.gameObject.SetActive(false);
+            }
+            journal.gameObject.SetActive(!journal.gameObject.activeSelf);
+        }
         
         // Page turning
         if (Input.GetKeyDown(KeyCode.RightArrow) && journal.gameObject.activeSelf && currentPage < pageCount - 1) currentPage++;
