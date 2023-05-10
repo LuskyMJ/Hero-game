@@ -89,7 +89,7 @@ public class Army
         List<Personality> peopleToAdd = new List<Personality>();
         for (int i = 0; i < loyalty.Count; i++) if (loyalty[i].hasAttribute(Personality.Attribute.StrongLike) && people[loyalty[i].strongLikeIndex] == person) peopleToAdd.Add(loyalty[i]);
         for (int i = 0; i < unassigned.Count; i++) if (unassigned[i].hasAttribute(Personality.Attribute.StrongLike) && people[unassigned[i].strongLikeIndex] == person) peopleToAdd.Add(unassigned[i]);
-        foreach (Personality personality in peopleToAdd) addToEmperor(personality);
+        foreach (Personality personality in peopleToAdd) addToPlayer(personality);
     }
 
     public void addToLoyal(Personality person)
